@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechLearn API Test</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <button onclick="login()">Login</button>
+
+  <h2>Get Courses</h2>
+  <button onclick="getCourses()">Fetch Courses</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    let token = '';
+
+    async function login() {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'shrashti@example.com',
+          password: 'mySecret123'
+        })
+      });
+
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+
+      if (data.token) {
+        token = data.token;
+        alert('Login successful!');
+      } else {
+        alert('Login failed!');
+      }
+    }
+
+    async function getCourses() {
+      const res = await fetch('http://localhost:5000/api/courses', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

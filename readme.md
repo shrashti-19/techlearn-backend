@@ -199,3 +199,26 @@ json
 
 ✅ Organized folder structure
 
+
+## Day 5 – Admin & Middleware
+- isAdmin field added in User model
+
+# Middleware:
+
+-authMiddleware for token validation
+
+- adminMiddleware to restrict course/note creation to admins
+
+- Protected routes using these middlewares
+
+## Day 6
+- Refactoring & Testing
+All code split into:
+
+- routes → controllers → models
+
+- All endpoints tested on Postman
+
+- .env variables standardized
+
+- Created a simple index.html to test API from frontend
