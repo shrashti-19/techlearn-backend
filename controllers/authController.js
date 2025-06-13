@@ -3,31 +3,70 @@ const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 
 // POST /register
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, email, mobile, gender, password, github } = req.body;
+
+//     if (!name || !email || !mobile || !gender || !password) {
+//       return res.status(400).json({ error: 'All fields are required' });
+//     }
+
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ error: 'Email already registered' });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const user = await User.create({
+//       name,
+//       email,
+//       mobile,
+//       gender,
+//       password: hashedPassword,
+//       github,
+//     });
+
+//     res.status(201).json({ message: 'User registered successfully' });
+//   } catch (error) {
+//     console.error('Signup error:', error);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// };
 const registerUser = async (req, res) => {
   try {
-    const { name, email, mobile, gender, password, github } = req.body;
+    const { firstName, lastName, username, email, password, confirmPassword } = req.body;
 
-    if (!name || !email || !mobile || !gender || !password) {
+    // 1. Validate required fields
+    if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
+    // 2. Passwords match check
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: 'Passwords do not match' });
+    }
+
+    // 3. Check for existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
+    // 4. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 5. Create user
     const user = await User.create({
-      name,
+      name: `${firstName} ${lastName}`,
       email,
-      mobile,
-      gender,
-      password: hashedPassword,
-      github,
+      username,
+      password: hashedPassword
     });
 
+    // 6. Success response
     res.status(201).json({ message: 'User registered successfully' });
+
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ error: 'Server error' });
